@@ -21,19 +21,19 @@ psect	keypad_code,class=CODE
 Keypad_read_column:
     banksel	PADCFG1
     bsf	    REPU
-    clrf    LATC, A
+    clrf    LATE, A
     movlw   0x0F
-    movwf   TRISC, A
-    movlw   10		; wait 40us
+    movwf   TRISE, A
+    ;movlw   10		; wait 40us
 ;    call    LCD_delay_x4us
     return
     
 Keypad_read_row:
     banksel	PADCFG1
     bsf	    REPU
-    clrf    LATC, A
+    clrf    LATE, A
     movlw   0xF0
-    movwf   TRISC, A
+    movwf   TRISE, A
     movlw   10		; wait 40us
 ;    call    LCD_delay_x4us
     return   

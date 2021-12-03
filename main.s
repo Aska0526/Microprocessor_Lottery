@@ -8,7 +8,7 @@ psect	data
 myTable:
 	db	'Y','o','u',' ','w','i','n',':',0x0a
 					; message, plus carriage return
-	myTable_l   EQU	8	; length of data
+	myTable_l   EQU	9	; length of data
 	align	2    
     
 psect	udata_acs   ; named variables in access ram
@@ -18,12 +18,13 @@ ifIR:       ds 1   ; reset
 temp_1:	    ds 1
 temp_2:	    ds 1
 temp_3:	    ds 1
+temp_4:	    ds 1
 counter:    ds 1    ; reserve one byte for a counter variable
 delay_count:ds 1    ; reserve one byte for counter in the delay routine
 
 extrn   Keypad_read_column
 extrn   timer_setup, timer_read
-extrn   LCD_Setup, LCD_Write_Message, LCD_Send_Byte_I
+extrn   LCD_Setup, LCD_Write_Message, LCD_Send_Byte_I, LCD_delay_x4us, LCD_delay_ms
     
 psect	code, abs
 setup:
@@ -33,6 +34,13 @@ setup:
 	bsf	EEPGD 	; access Flash program memory
 	call	LCD_Setup	; setup LCD
 	call	timer_setup
+	
+	movlw	0xFF
+	movwf	temp_1, A
+	movwf	temp_2, A
+	movwf	temp_3, A
+	movlw	0x05
+	movwf   temp_4, A 
 	
 	movlw   0x0
 	movwf   TRISC, A
@@ -71,19 +79,15 @@ loop: 	tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
 	return
 
 delay_1s:
-	banksel	temp_1
-	movlw	0xFF
-	movwf	temp_1
-	movwf	temp_2
-	movlw	0x05
-	
-	movwf	temp_3
+	;banksel	temp_1
 	decfsz	temp_1
 	goto	$-1
 	decfsz	temp_2
 	goto	$-3
 	decfsz	temp_3
 	goto	$-5
+	decfsz	temp_4
+	goto	$-7
 	return
 	
 main:
@@ -103,6 +107,8 @@ drawing:
 	movwf   PORTC
 	movlw	00000001B	; display clear
 	call	LCD_Send_Byte_I
+	movlw	2		; wait 2ms
+	call	LCD_delay_ms
 	call    start
 	call    delay_1s
 	return
