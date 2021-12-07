@@ -17,6 +17,10 @@
       <itemPath>random.s</itemPath>
       <itemPath>Keypad.s</itemPath>
       <itemPath>LCD.s</itemPath>
+      <itemPath>../../30-11-new/project.X/Pool.s</itemPath>
+      <itemPath>../../30-11-new/project.X/balance_check.s</itemPath>
+      <itemPath>../../30-11-new/project.X/drawing.s</itemPath>
+      <itemPath>../../30-11-new/project.X/show_nothing.s</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -26,6 +30,7 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>.</Elem>
+    <Elem>../../30-11-new/project.X</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -590,6 +595,8 @@
         <property key="periphComp5.gte" value="gt"/>
         <property key="periphComp6.gte" value="gt"/>
         <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmerToGoFilePath"
+                  value="H:/30-11-new/project.X/debug/default/default_ptg"/>
         <property key="programmerToGoImageName" value="default_ptg"/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>

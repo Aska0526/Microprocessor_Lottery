@@ -14,6 +14,7 @@
             <make-dep-projects/>
             <sourceRootList>
                 <sourceRootElem>.</sourceRootElem>
+                <sourceRootElem>../../30-11-new/project.X</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
