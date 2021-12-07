@@ -10,7 +10,7 @@ myArray3:    ds 0x40 ; reserve 128 bytes for message data
 psect	data    
 	; ******* myTable, data in programme memory, and its length *****    
 myTable3:
-	db	'N','o','t','h','i','n','g',' ','Q','A','Q',0x0c
+	db	'N','o','t','h','i','n','g',' ','T','o','T',0x0c
 					; message, plus carriage return
 	myTable_3   EQU	12	; length of data
 	align	2        

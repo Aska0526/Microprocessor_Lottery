@@ -20,6 +20,7 @@ extrn   timer_setup, timer_read
 extrn   LCD_Setup, LCD_Write_Message, LCD_Send_Byte_I, LCD_delay_x4us, LCD_delay_ms, LCD_Send_Byte_D
 extrn   start1, start2
 extrn   find_prize
+extrn	extract1, extract2, extract3
     
 psect	code, abs
 setup:
@@ -29,7 +30,7 @@ setup:
 	movwf	temp_1, A
 	movwf	temp_2, A
 	movwf	temp_3, A
-	movlw	0x05
+	movlw	0x02
 	movwf   temp_4, A 
 	
 	movlw   00110001B  ; set initial value of balance to be 100 in ASCII
@@ -91,12 +92,9 @@ drawing:
 	
 	call    timer_read
 	movwf   PORTC
-	nop
-	nop
-	nop
-	nop
 	call    find_prize
 	
+	call    addition
 	call    delay_1s
 	return
 
@@ -153,6 +151,25 @@ carry_minus:
     movlw  00111001B
     movwf  digit2, A
     return
+
+addition:
+    call    extract1
+    addwf   digit1, 1, 0
+    call    extract2
+    addwf   digit2, 1, 0
+    movlw   00111001B
+    cpfsgt  digit2, A
+    return
+    call    carry_plus
+    return
+
+carry_plus:
+    movlw   0x01
+    addwf   digit1, 1, 0
+    movlw   0x0a
+    subwf   digit2, 1, 0
+    return
+    
 
 
 delay_1s:

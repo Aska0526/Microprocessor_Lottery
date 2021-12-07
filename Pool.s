@@ -1,16 +1,25 @@
     #include <xc.inc>
     
-    global   find_prize
+    global   find_prize, extract1, extract2, extract3
 
 extrn    show_nothing, LCD_Send_Byte_D, LCD_delay_ms
     
 psect	udata_acs   ; named variables in access ram
 ran:     ds 1
+pd1:     ds 1       ; first digit (from left to right) of the prize 
+pd2:     ds 1
+pd3:     ds 1
 	
 psect	Pool_code, class=CODE
 	
 find_prize:
     movwf   ran, A
+    
+    movlw   0x00 ;default value is 0
+    movwf   pd1, A
+    movwf   pd2, A
+    movwf   pd3, A
+    
     movlw   0xa0    ; compare with 160; if less than 160, no prize
     cpfsgt  ran, A
     call    show_nothing
@@ -36,8 +45,7 @@ find_prize:
     cpfsgt  ran, A
     call    prize7
     
-    goto    $
-    ;return  
+    return  
     
 prize1:; win 10
     movlw   0xa0
@@ -51,6 +59,10 @@ prize1:; win 10
     call    LCD_Send_Byte_D
     movlw   2		; wait 2ms
     call    LCD_delay_ms
+    
+    movlw   0x01      ; second digit to 1
+    movwf   pd2, A
+    
     return
     
 prize2:; win 20
@@ -65,6 +77,8 @@ prize2:; win 20
     call    LCD_Send_Byte_D
     movlw   2		; wait 2ms
     call    LCD_delay_ms
+    movlw   0x02     ; second digit to 2
+    movwf   pd2, A
     return
     
 
@@ -80,6 +94,8 @@ prize3:; win 30
     call    LCD_Send_Byte_D
     movlw   2		; wait 2ms
     call    LCD_delay_ms
+    movlw   0x03      ; second digit to 3
+    movwf   pd2, A
     return
 
 prize4:; win 40
@@ -94,6 +110,8 @@ prize4:; win 40
     call    LCD_Send_Byte_D
     movlw   2		; wait 2ms
     call    LCD_delay_ms
+    movlw   0x04      ; second digit to 4
+    movwf   pd2, A
     return
     
 prize5:; win 50
@@ -108,6 +126,8 @@ prize5:; win 50
     call    LCD_Send_Byte_D
     movlw   2		; wait 2ms
     call    LCD_delay_ms
+    movlw   0x05      ; second digit to 5
+    movwf   pd2, A
     return
     
 prize6:; win 60
@@ -122,6 +142,8 @@ prize6:; win 60
     call    LCD_Send_Byte_D
     movlw   2		; wait 2ms
     call    LCD_delay_ms
+    movlw   0x06      ; second digit to 6
+    movwf   pd2, A
     return
     
 prize7:; win 100
@@ -140,4 +162,16 @@ prize7:; win 100
     call    LCD_Send_Byte_D
     movlw   2		; wait 2ms
     call    LCD_delay_ms
+    movlw   0x01      ; third digit to 1
+    movwf   pd1, A
+    return
+    
+extract1:
+    movf    pd1, W, A
+    return
+extract2:
+    movf    pd2, W, A
+    return
+extract3:
+    movf    pd3, W, A
     return
