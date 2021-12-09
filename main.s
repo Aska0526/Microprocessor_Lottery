@@ -15,6 +15,7 @@ delay_count:ds 1    ; reserve one byte for counter in the delay routine
 digit1:	    ds 1
 digit2:	    ds 1
 digit3:	    ds 1
+ifcarry:    ds 1
    
 
 extrn   Keypad_read_column
@@ -28,7 +29,8 @@ extrn   welcome, autoend
 psect	code, abs
 setup:
 	org	0x0 
-	
+	movlw   0x0
+	movwf   ifcarry, A
 	movlw	0xFF       ; for delay
 	movwf	temp_1, A
 	movwf	temp_2, A
@@ -36,11 +38,11 @@ setup:
 	movlw	0x02
 	movwf   temp_4, A 
 	
-	movlw   00110001B  ; set initial value of balance to be 100 in ASCII
+	movlw   00110000B  ; set initial value of balance to be 100 in ASCII
 	movwf   digit1, A
-	;movlw   00111001B ; 9 in ASCII
-	movlw   00110000B
+	movlw   00110010B
 	movwf   digit2, A
+	movlw	00110000B
 	movwf   digit3, A
 	
 	movlw   0x0
@@ -84,6 +86,8 @@ drawing:
 	movlw	2		; wait 2ms
 	call	LCD_delay_ms
 	
+	movlw   0x0
+	movwf   ifcarry, A
 	movlw	00110000B
 	cpfsgt  digit2, A
 	call    carry_minus
@@ -147,8 +151,8 @@ IR:
 
 
 normal_minus:
-    movlw   00111001B
-    cpfslt  digit2, A
+    movlw   0x01
+    cpfslt  ifcarry, A
     return
     decf    digit2, 1, 0
     return
@@ -157,6 +161,8 @@ carry_minus:
     decf    digit1, 1, 0
     movlw   00111001B; 9 in ASCII
     movwf   digit2, A
+    movlw   0x01
+    movwf   ifcarry, A
     return
 
 addition:
