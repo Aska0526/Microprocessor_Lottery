@@ -21,6 +21,8 @@
       <itemPath>balance_check.s</itemPath>
       <itemPath>drawing.s</itemPath>
       <itemPath>show_nothing.s</itemPath>
+      <itemPath>startpage.s</itemPath>
+      <itemPath>end.s</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

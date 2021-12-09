@@ -1,5 +1,7 @@
     #include <xc.inc>
     
+    global  setup, delay_1s
+    
 psect	udata_acs   ; named variables in access ram
 pull:	    ds 1   ; draw a lottery
 check:      ds 1   ; check balance
@@ -21,6 +23,7 @@ extrn   LCD_Setup, LCD_Write_Message, LCD_Send_Byte_I, LCD_delay_x4us, LCD_delay
 extrn   start1, start2
 extrn   find_prize
 extrn	extract1, extract2, extract3
+extrn   welcome, autoend
     
 psect	code, abs
 setup:
@@ -54,6 +57,7 @@ setup:
 	bcf	CFGS	; point to Flash program memory  
 	bsf	EEPGD 	; access Flash program memory
 	call	LCD_Setup	; setup LCD
+	call    welcome
 	call	timer_setup
 	
 	goto    main
@@ -81,9 +85,9 @@ drawing:
 	call	LCD_delay_ms
 	
 	movlw	00110000B
-	cpfseq  digit2, A
-	call    normal_minus
+	cpfsgt  digit2, A
 	call    carry_minus
+	call    normal_minus
 	
 	movlw   11000000B	; set address to the second line
 	call	LCD_Send_Byte_I
@@ -95,6 +99,11 @@ drawing:
 	call    find_prize
 	
 	call    addition
+	
+	movlw	00110000B
+	cpfsgt	digit2, A; see if the second digit is zero
+	call	compare	
+	
 	call    delay_1s
 	return
 
@@ -133,23 +142,21 @@ IR:
 	movf	PORTE, W
 	cpfseq	ifIR, A
 	return
-	call    LCD_Setup
-	return
+	goto    setup
 
 
 
 normal_minus:
-    decf  digit2, 1, 0
+    movlw   00111001B
+    cpfslt  digit2, A
+    return
+    decf    digit2, 1, 0
     return
 
 carry_minus:
-    movlw  00110000B
-    cpfseq   digit2, A
-    return
- ;do the carry bit
-    decf   digit1, 1, 0
-    movlw  00111001B
-    movwf  digit2, A
+    decf    digit1, 1, 0
+    movlw   00111001B; 9 in ASCII
+    movwf   digit2, A
     return
 
 addition:
@@ -184,7 +191,16 @@ delay_1s:
 	goto	$-7
 	return
 	
-	end	main
 	
+compare:
+	cpfseq	digit1, A; see if the first digit is zero
+	return	
+	movlw	00000001B	; display clear
+	call	LCD_Send_Byte_I
+	movlw	2		; wait 2ms
+	call	LCD_delay_ms
+	call	autoend
+	
+	end	main	
 
-	
+
