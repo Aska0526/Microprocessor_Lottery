@@ -23,6 +23,7 @@
       <itemPath>show_nothing.s</itemPath>
       <itemPath>startpage.s</itemPath>
       <itemPath>end.s</itemPath>
+      <itemPath>buzzer.s</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

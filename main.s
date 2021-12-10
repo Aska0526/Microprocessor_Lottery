@@ -1,6 +1,6 @@
     #include <xc.inc>
     
-    global  setup, delay_1s
+    global  setup, delay_1s, delay_5s
     
 psect	udata_acs   ; named variables in access ram
 pull:	    ds 1   ; draw a lottery
@@ -16,6 +16,7 @@ digit1:	    ds 1
 digit2:	    ds 1
 digit3:	    ds 1
 ifcarry:    ds 1
+ten:        ds 1    ;number 10
    
 
 extrn   Keypad_read_column
@@ -24,7 +25,9 @@ extrn   LCD_Setup, LCD_Write_Message, LCD_Send_Byte_I, LCD_delay_x4us, LCD_delay
 extrn   start1, start2
 extrn   find_prize
 extrn	extract1, extract2, extract3
-extrn   welcome, autoend
+extrn   welcome, autoend, manualend, bye
+extrn   Init_TMR2 
+;extrn	light
     
 psect	code, abs
 setup:
@@ -38,16 +41,21 @@ setup:
 	movlw	0x02
 	movwf   temp_4, A 
 	
-	movlw   00110000B  ; set initial value of balance to be 100 in ASCII
+	movlw   00110001B  ; set initial value of balance to be 100 in ASCII
 	movwf   digit1, A
-	movlw   00110010B
+	movlw   00110000B
 	movwf   digit2, A
-	movlw	00110000B
 	movwf   digit3, A
 	
 	movlw   0x0
 	movwf   TRISC, A
 	movwf   TRISD, A
+	;movwf   TRISE, A
+	;movwf   TRISF, A
+	;movwf   TRISG, A
+	;movwf   TRISH, A
+	;movwf   TRISJ, A
+	
 	
 	movlw   00001110B ;give value to pull
 	movwf   pull
@@ -61,6 +69,8 @@ setup:
 	call	LCD_Setup	; setup LCD
 	call    welcome
 	call	timer_setup
+	
+	call    Init_TMR2 ; initialise timer2 for buzzer
 	
 	goto    main
 	
@@ -77,6 +87,8 @@ drawing:
 	movf	PORTE, W
 	cpfseq	pull, A ;compare if it is the 1st column, if it is then skip next line
 	return
+	
+	;call light
 	
 	movlw	00000001B	; display clear
 	call	LCD_Send_Byte_I
@@ -115,10 +127,12 @@ balance_check:
 	movf	PORTE, W
 	cpfseq	check, A
 	return
+	
 	movlw	00000001B	; display clear
 	call	LCD_Send_Byte_I
 	movlw	2		; wait 2ms
 	call	LCD_delay_ms
+	
 	call	start2
 	movlw	2		; wait 2ms
 	call	LCD_delay_ms
@@ -146,6 +160,28 @@ IR:
 	movf	PORTE, W
 	cpfseq	ifIR, A
 	return
+	
+	movlw	00000001B	; display clear
+	call	LCD_Send_Byte_I
+	movlw	2		; wait 2ms
+	call	LCD_delay_ms
+	
+	call    manualend
+	
+	movlw   00110000B
+	cpfsgt  digit1, A
+	call    losemoney
+	call    earnmoney
+	
+	movlw   11000000B	; set address to the second line
+	call	LCD_Send_Byte_I
+	movlw	2		; wait 2ms
+	call	LCD_delay_ms
+	
+	call    bye
+	
+	call    delay_5s
+	
 	goto    setup
 
 
@@ -183,9 +219,19 @@ carry_plus:
     subwf   digit2, 1, 0
     return
     
-
-
 delay_1s:
+    movlw   0xfa
+    call    LCD_delay_ms
+    movlw   0xfa
+    call    LCD_delay_ms
+    movlw   0xfa
+    call    LCD_delay_ms
+    movlw   0xfa
+    call    LCD_delay_ms
+    return
+	
+
+delay_5s:
 	;banksel	temp_1
 	decfsz	temp_1
 	goto	$-1
@@ -206,7 +252,60 @@ compare:
 	movlw	2		; wait 2ms
 	call	LCD_delay_ms
 	call	autoend
+
+losemoney:
+	movlw   00111010B;   9 in ASCII plus 1
+	movwf   ten, A
+	movf    digit2, W, A
+	movff   ten, digit2, A
+	subwf   digit2, 1, 0
+	movlw   00110000B
+	addwf   digit2, 1, 0
 	
-	end	main	
+	movlw	00101101B; '-' in ASCII  
+	call	LCD_Send_Byte_D
+	movlw	2		; wait 2ms
+	call	LCD_delay_ms
+	
+	movf    digit2, W, A
+	call	LCD_Send_Byte_D
+	movlw	2		; wait 2ms
+	call	LCD_delay_ms
+	
+	movf    digit3, W, A
+	call	LCD_Send_Byte_D
+	movlw	2		; wait 2ms
+	call	LCD_delay_ms
+	
+	return
+	
+earnmoney:
+	movlw	00110000B
+	cpfsgt	digit1, A
+	return
+	
+	decf    digit1, 1, 0
+	
+	movf    digit1, W, A
+	call	LCD_Send_Byte_D
+	movlw	2		; wait 2ms
+	call	LCD_delay_ms
+	
+	movf    digit2, W, A
+	call	LCD_Send_Byte_D
+	movlw	2		; wait 2ms
+	call	LCD_delay_ms
+	
+	movf    digit3, W, A
+	call	LCD_Send_Byte_D
+	movlw	2		; wait 2ms
+	call	LCD_delay_ms
+	
+	return
+	
+	
+
+	end	main
+	
 
 

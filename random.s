@@ -1,6 +1,7 @@
 #include <xc.inc>
     
 global	timer_setup,timer_read
+    
 psect	udata_acs   
 delay_count:	ds 1	
     
