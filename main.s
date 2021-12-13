@@ -49,7 +49,7 @@ setup:
 	
 	movlw   0x0
 	movwf   TRISC, A
-	movwf   TRISD, A
+	;movwf   TRISD, A
 	;movwf   TRISE, A
 	;movwf   TRISF, A
 	;movwf   TRISG, A
@@ -79,9 +79,8 @@ main:
 	call    drawing
 	call    balance_check
 	call    IR
-	bra     main
-	;other condition which I haven't thought of
-	;bra	
+	;call    Init_TMR2 ; initialise timer2 for buzzer
+	bra     main	
 	
 drawing:
 	movf	PORTE, W

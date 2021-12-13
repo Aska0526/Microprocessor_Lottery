@@ -5,29 +5,27 @@ global  Init_TMR2
 psect	buzzer_code,class=CODE    
     
     
-Init_TMR2:   
-    ;movlw   01110110B; 16MHz  control frequency
-    ;movwf   OSCCON
-    clrf    CM1CON
-    clrf    CM2CON
+Init_TMR2:    
+    movlw   0x90  ;144 to timer2 period
+    movwf   PR2, A
     
-    clrf    PORTA
-    clrf    LATA
-    clrf    TRISA
-    clrf    PORTD
-    clrf    LATD
-    clrf    TRISD
-    
-    movlw   00111100B
-    movwf   CCP4CON
-    movlw   10110101
+    movlw   00010101 ;write duty cycle
     movwf   CCPR4L
     
-    bcf	    PIR1, 1
-    bcf	    T2CON, 1
-    bsf	    T2CON, 2
+    movlw   00111100B  ;single output controlled by steering
+    movwf   CCP4CON
     
-    movff   TMR2,  PORTD, A
+    movlw   0x00
+    movwf   TRISG, A
+    
+    movlw   00000111B
+    movwf   T2CON     ;set timer2 so that it has a prescale value of 16
+
+    movlw   00000000B
+    movwf   CCPTMRS1, A
+    
+  
+  
     
     return
     
