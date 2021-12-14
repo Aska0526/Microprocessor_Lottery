@@ -1,6 +1,6 @@
     #include <xc.inc>
     
-    global  setup, delay_1s, delay_5s
+    global  setup, delay_1s, delay_5s, delay_250ms, delay_50ms, delay_25ms ,delay_10ms, delay_5ms, delay_2ms;for 64MHz oscillator 
     
 psect	udata_acs   ; named variables in access ram
 pull:	    ds 1   ; draw a lottery
@@ -17,7 +17,7 @@ digit2:	    ds 1
 digit3:	    ds 1
 ifcarry:    ds 1
 ten:        ds 1    ;number 10
-   
+
 
 extrn   Keypad_read_column
 extrn   timer_setup, timer_read
@@ -26,7 +26,7 @@ extrn   start1, start2
 extrn   find_prize
 extrn	extract1, extract2, extract3
 extrn   welcome, autoend, manualend, bye
-extrn   Init_TMR2 
+extrn   mov_index,select_tone
 ;extrn	light
     
 psect	code, abs
@@ -70,7 +70,7 @@ setup:
 	call    welcome
 	call	timer_setup
 	
-	call    Init_TMR2 ; initialise timer2 for buzzer
+	;call    Init_TMR2 ; initialise timer2 for buzzer
 	
 	goto    main
 	
@@ -79,7 +79,6 @@ main:
 	call    drawing
 	call    balance_check
 	call    IR
-	;call    Init_TMR2 ; initialise timer2 for buzzer
 	bra     main	
 	
 drawing:
@@ -88,6 +87,7 @@ drawing:
 	return
 	
 	;call light
+	
 	
 	movlw	00000001B	; display clear
 	call	LCD_Send_Byte_I
@@ -109,9 +109,13 @@ drawing:
 	movlw	2		; wait 2ms
 	call	LCD_delay_ms
 	
-	call    timer_read
-	movwf   PORTC
+	call    timer_read     ; get the random number from TIMER and write it to W register
+	;movlw   0xff
+	movwf   PORTC, A
+	call	mov_index; move the price variable to the buzzer module for storage
 	call    find_prize
+	
+	call    select_tone
 	
 	call    addition
 	
@@ -119,7 +123,7 @@ drawing:
 	cpfsgt	digit2, A; see if the second digit is zero
 	call	compare	
 	
-	call    delay_1s
+	;call    delay_1s
 	return
 
 balance_check:
@@ -217,6 +221,39 @@ carry_plus:
     movlw   0x0a
     subwf   digit2, 1, 0
     return
+
+delay_2ms:
+    movlw   0x02
+    call    LCD_delay_ms
+    return   
+      
+delay_5ms:
+    movlw   0x05
+    call    LCD_delay_ms
+    return
+
+delay_10ms:
+    movlw   0x0a
+    call    LCD_delay_ms
+    return
+
+delay_25ms:
+    movlw   0x19
+    call    LCD_delay_ms
+    return
+
+
+delay_50ms:
+    movlw   0x32
+    call    LCD_delay_ms
+    return
+
+
+delay_250ms:
+    movlw   0xfa
+    call    LCD_delay_ms
+    return    
+    
     
 delay_1s:
     movlw   0xfa
