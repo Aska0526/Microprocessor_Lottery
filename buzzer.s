@@ -19,7 +19,7 @@ mov_index:
     return
       
     
-select_tone:
+select_tone:     ; sed_xx represents different melodies to show when having different results
     movlw   0xa0    ; compare with 160; if less than 160, c4 correspond to no price
     cpfsgt  index, A
     call    send_c4
@@ -76,7 +76,7 @@ send_c4:   ;win nothing
     bcf     T2CON, 2
     call    delay_25ms
     
-    clrf    OSCCON
+    clrf    OSCCON   ;set internal clock back to the original frequency (64MHz)
     return
     
 send_d4:  ;win10
@@ -114,7 +114,7 @@ send_d4:  ;win10
     bcf     T2CON, 2
     call    delay_25ms
     
-    clrf    OSCCON
+    clrf    OSCCON  ;set internal clock back to the original frequency (64MHz)
     return
     
 send_e4:
@@ -158,7 +158,7 @@ send_e4:
     bcf     T2CON, 2
     call    delay_25ms
     
-    clrf    OSCCON
+    clrf    OSCCON    ;set internal clock back to the original frequency (64MHz)
     return
     
 send_f4:
@@ -208,7 +208,7 @@ send_f4:
     bcf     T2CON, 2
     call    delay_25ms
     
-    clrf    OSCCON
+    clrf    OSCCON      ;set internal clock back to the original frequency (64MHz)
     return
 
 send_g4:
@@ -264,7 +264,7 @@ send_g4:
     bcf     T2CON, 2
     call    delay_25ms
     
-    clrf    OSCCON
+    clrf    OSCCON     ;set internal clock back to the original frequency (64MHz)
     return
     
 send_a4:
@@ -320,7 +320,7 @@ send_a4:
     bcf     T2CON, 2
     call    delay_25ms
     
-    clrf    OSCCON
+    clrf    OSCCON   ;set internal clock back to the original frequency (64MHz)
     return
     
 send_b4:
@@ -369,7 +369,7 @@ send_b4:
     bcf     T2CON, 2
     call    delay_25ms
     
-    clrf    OSCCON
+    clrf    OSCCON   ;set internal clock back to the original frequency (64MHz)
     return
     
 grand_prize:
@@ -448,5 +448,5 @@ grand_prize:
     bcf     T2CON, 2
     call    delay_25ms
     
-    clrf    OSCCON
+    clrf    OSCCON   ;set internal clock back to the original frequency (64MHz)
     return

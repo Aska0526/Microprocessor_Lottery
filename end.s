@@ -2,7 +2,7 @@
      
      global  autoend, manualend, bye
  
-extrn   LCD_Write_Message, delay_1s, setup, delay_5s    
+extrn   LCD_Write_Message, delay_1s, setup, delay_long
     
 psect	udata_bank6 ; reserve data anywhere in RAM (here at 0x400)
 myArray5:    ds 0x40 ; reserve 128 bytes for message data
@@ -57,7 +57,7 @@ loop5:  tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
 	call	LCD_Write_Message
 	
 	;goto	$		; goto current line in code
-	call	delay_5s
+	call	delay_long
 	goto    setup
 	;return
 	
@@ -82,9 +82,6 @@ loop6:  tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
 	lfsr	2, myArray6
 	call	LCD_Write_Message
 	
-	;goto	$		; goto current line in code
-	;call	delay_1s
-	;goto    setup
 	return
 
 bye:
@@ -108,8 +105,5 @@ loop7:  tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
 	lfsr	2, myArray7
 	call	LCD_Write_Message
 	
-	;goto	$		; goto current line in code
-	;call	delay_1s
-	;goto    setup
 	return
 

@@ -42,7 +42,6 @@ loop4:  tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
 	lfsr	2, myArray4
 	call	LCD_Write_Message
 	
-	;goto	$		; goto current line in code
 	return
     
 

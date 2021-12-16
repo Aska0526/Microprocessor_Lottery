@@ -18,9 +18,5 @@ timer_setup:
 	return
 	
 timer_read:
-	;xyz:
-	    ;btfss   INTCON, 2; see when the timer reaches the roll-over point
-	    ;bra	    xyz
-	;bcf	T0CON, 7; close the timer
 	movf    TMR0L, W, A; display result
 	return

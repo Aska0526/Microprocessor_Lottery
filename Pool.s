@@ -20,28 +20,29 @@ find_prize:
     movwf   pd2, A
     movwf   pd3, A
     
-    movlw   0xa0    ; compare with 160; if less than 160, no prize
+    movlw   0xa0    ; compare with 160; if no greater than 160, no prize
     cpfsgt  ran, A
     call    show_nothing
-    movlw   0xc8
+    movlw   0xc8 ; compare with 200; if no greater than 200, win 10 bucks
     cpfsgt  ran, A
     call    prize1
-    movlw   0xf0
+    movlw   0xf0; compare with 240; if no greater than 240, win 20 bucks
     cpfsgt  ran,A
     call    prize2
-    movlw   0xf5
+    movlw   0xf5   ; compare with 245; if no greater than 245, win 30 bucks
     cpfsgt  ran,A
     call    prize3
-    movlw   0xfa
+    movlw   0xfa ; compare with 250; if no greater than 250, win 40 bucks
     cpfsgt  ran,A
     call    prize4
-    movlw   0xfd
+    movlw   0xfd ; compare with 253; if no greater than 253, win 50 bucks
+    
     cpfsgt  ran, A
     call    prize5
-    movlw   0xfe
+    movlw   0xfe; compare with 254; if no greater than 254, win 60 bucks
     cpfsgt  ran, A
     call    prize6
-    movlw   0xff
+    movlw   0xff; compare with 255; if no greater than 255, win 100 bucks
     cpfsgt  ran, A
     call    prize7
     
@@ -166,12 +167,12 @@ prize7:; win 100
     movwf   pd1, A
     return
     
-extract1:
+extract1:        ; put the first digit of the price to the w register
     movf    pd1, W, A
     return
-extract2:
+extract2:   ; put the second digit of the price to the w register
     movf    pd2, W, A
     return
-extract3:
+extract3:   ; put the third digit of the price to the w register
     movf    pd3, W, A
     return
